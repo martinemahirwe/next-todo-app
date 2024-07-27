@@ -30,8 +30,7 @@ const Todos: FC<Props> = ({ todos }) => {
   };
 
   return (
-    <main className="flex flex-col pl-10">
-      <div className="text-5xl font-medium flex items-center justify-center">To-do app</div>
+    <main className="flex flex-col text-center">
       <TodoForm AddTodo={createTodo} />
       <div className="flex flex-col mt-8 gap-2">
         {todos.map((todo) => (

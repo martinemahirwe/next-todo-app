@@ -4,6 +4,7 @@ import { todoType } from "@/types/todoType";
 import { Checkbox } from "./ui/checkbox";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
+import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogFooter, AlertDialogAction } from "./ui/alert-dialog";
 
 interface Props {
   todo: todoType;
@@ -30,7 +31,7 @@ const TodoItem: FC<Props> = ({
     toggleIsCompleted(todo.id, !isCompleted);
     setIsCompleted((prev) => !prev);
   };
-  
+
   const handleEdit = () => {
     setEditing(true);
   };
@@ -46,9 +47,7 @@ const TodoItem: FC<Props> = ({
   };
 
   const handleDelete = () => {
-    if (confirm("Are you sure you want to delete this todo?")) {
-      deleteTodoItem(todo.id);
-    }
+    deleteTodoItem(todo.id);
   };
 
   return (
@@ -56,13 +55,20 @@ const TodoItem: FC<Props> = ({
       <Checkbox
         checked={isCompleted}
         onCheckedChange={handleIsCompleted} className="rounded"/>
-      {editing && !isCompleted ? (<Input
-        value={text}
-        onChange={handleTextChange}
-        className="rounded ml-1 mr-1 outline-none focus:outline-none"
-      />) : (<p className={`${
-        todo.completed ? "line-through" : ""
-        } outline-none read-only:border-transparent focus:border border-gray-200 rounded px-2 py-1 w-full`}>{text}</p>)}
+      {editing && !isCompleted ? (
+        <Input
+          value={text}
+          onChange={handleTextChange}
+          className="rounded ml-1 mr-1 outline-none focus:outline-none"
+        />
+      ) : (
+        <p className={`${
+          todo.completed ? "line-through" : ""
+          } outline-none read-only:border-transparent focus:border border-gray-200 rounded px-2 py-1 w-full`}
+        >
+          {text}
+        </p>
+      )}
       <div className="flex gap-1 ml-auto">
         {editing && !isCompleted ? (
           <Button
@@ -87,12 +93,31 @@ const TodoItem: FC<Props> = ({
             Close
           </Button>
         ) : (
-          <Button
-            onClick={handleDelete}
-            className="bg-red-500 w-16 text-red-50 rounded px-2 py-1"
-          >
-            Delete
-          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                className="bg-red-500 w-16 text-red-50 rounded px-2 py-1"
+              >
+                Delete
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Confirm Deletion</AlertDialogTitle>
+              </AlertDialogHeader>
+              <div className="p-4">
+                Are you sure you want to delete this task?
+              </div>
+              <AlertDialogFooter>
+                <AlertDialogAction onClick={handleDelete} className="bg-red-500 text-white rounded px-4 py-2">
+                  Delete
+                </AlertDialogAction>
+                <AlertDialogAction className="bg-gray-500 text-white rounded px-4 py-2">
+                  Cancel
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         )}
       </div>
     </div>
