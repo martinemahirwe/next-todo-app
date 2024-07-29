@@ -6,7 +6,6 @@ import database from "@/db/drizzle";
 import { todolist } from "@/db/schema";
 
 export const fetchTasks = async () => {
-  await new Promise((resolve) => setTimeout(resolve, 2000));
   const tasks = await database.select().from(todolist);
   return tasks;
 };
@@ -16,13 +15,13 @@ export const createTask = async (id:string,description: string) => {
     id:id,
     task: description,
   });
-  revalidatePath("/");
+  revalidatePath("/todos");
 };
 
 export const removeTask = async (taskId: string) => {
   await database.delete(todolist).where(eq(todolist.id, taskId));
 
-  revalidatePath("/");
+  revalidatePath("/todos");
 };
 
 export const updateTaskStatus = async (taskId: string, completed: boolean) => {
@@ -33,7 +32,7 @@ export const updateTaskStatus = async (taskId: string, completed: boolean) => {
     })
     .where(eq(todolist.id, taskId));
 
-  revalidatePath("/");
+  revalidatePath("/todos");
 };
 
 export const updateTask = async (taskId: string, description: string) => {
@@ -44,5 +43,5 @@ export const updateTask = async (taskId: string, description: string) => {
     })
     .where(eq(todolist.id, taskId));
 
-  revalidatePath("/");
+  revalidatePath("/todos");
 };
