@@ -1,6 +1,7 @@
 
 import { signIn } from 'next-auth/react';
 import { ReactNode } from 'react';
+import { Button } from './ui/button';
 
 interface SignInProps {
   provider: string;
@@ -11,12 +12,12 @@ interface SignInProps {
 
 export function SignIn({ provider, buttonText, buttonClass, icon }: SignInProps) {
   return (
-    <button
+    <Button
       onClick={() => signIn(provider)}
       className={buttonClass}
     >
       {icon}
       {buttonText}
-    </button>
+    </Button>
   );
 }

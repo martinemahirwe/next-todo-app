@@ -5,15 +5,16 @@ import { revalidatePath } from "next/cache";
 import database from "@/db/drizzle";
 import { todolist } from "@/db/schema";
 
-export const fetchTasks = async () => {
-  const tasks = await database.select().from(todolist);
+export const fetchTasks = async (userEmail:string) => {
+  const tasks = await database.select().from(todolist).where(eq(todolist.userEmail, userEmail));
   return tasks;
 };
 
-export const createTask = async (id:string,description: string) => {
+export const createTask = async (id:string,description: string, userEmail:string) => {
   await database.insert(todolist).values({
     id:id,
     task: description,
+    userEmail: userEmail
   });
   revalidatePath("/todos");
 };

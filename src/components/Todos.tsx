@@ -15,7 +15,7 @@ const Todos: FC<Props> = ({ todos }) => {
   const queryClient = useQueryClient();
 
   const createTaskMutation = useMutation({
-    mutationFn: ({ id, task }: { id: string; task: string }) => createTask(id, task),
+    mutationFn: ({ id, task, userEmail }: { id: string; task: string, userEmail:string }) => createTask(id, task, userEmail),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['todos'] });
     }
@@ -42,9 +42,9 @@ const Todos: FC<Props> = ({ todos }) => {
     }
   });
 
-  const createTodo = (task: string) => {
+  const createTodo = (task: string, userEmail:string) => {
     const id = uuidv4();
-    createTaskMutation.mutate({ id, task });
+    createTaskMutation.mutate({ id, task, userEmail });
   };
 
   const changeTodoText = (id: string, task: string) => {
