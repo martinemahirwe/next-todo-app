@@ -19,18 +19,18 @@ const LoginPage = async () => {
         <p className="text-lg text-center mb-8 text-gray-700">
           Please login to create and manage your tasks
         </p>
-        <div className="flex justify-center gap-4">
+        <div className="flex justify-center gap-6">
           <SignIn
             provider="github"
             buttonText="Login with GitHub"
-            buttonClass="flex items-center justify-center w-1/2 bg-black text-white py-2 px-4 rounded shadow hover:bg-[#070f14] transition duration-300"
-            icon={<AiOutlineGithub className="mr-2" />}
+            buttonClass="flex items-center justify-center bg-black text-white py-2 px-8 rounded shadow hover:bg-[#070f14] transition duration-300"
+            icon={<AiOutlineGithub className="ml-1" />}
           />
           <SignIn
             provider="google"
             buttonText="Login with google"
-            buttonClass="flex items-center justify-center w-1/2 bg-yellow-100 border border-gray-300 text-gray-800 py-2 px-4 rounded shadow hover:bg-gray-100 transition duration-300"
-            icon={<AiOutlineGoogle className="mr-2 text-[#37db5b]" />}
+            buttonClass="flex items-center justify-center bg-yellow-100 border border-gray-300 text-gray-800 py-2 px-8 rounded shadow hover:bg-gray-100 transition duration-300"
+            icon={<AiOutlineGoogle className="ml-1 text-[#37db5b]" />}
           />
         </div>
       </div>
