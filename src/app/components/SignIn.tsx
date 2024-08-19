@@ -5,8 +5,8 @@ import { Button } from './ui/button';
 interface SignInProps {
   provider: string;
   buttonText: string;
-  buttonClass: string;
-  icon: ReactNode;
+  buttonClass?: string;
+  icon?: ReactNode;
 }
 
 export async function SignIn({

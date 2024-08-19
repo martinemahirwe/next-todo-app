@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import TanstackProvider from '@/providers/TanstackProvider';
 import { SessionProvider } from 'next-auth/react';
+import { ThemeProviders } from '@/providers/themeProvider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -19,11 +20,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <SessionProvider>
-          <TanstackProvider>
-            <div>{children}</div>
-          </TanstackProvider>
-        </SessionProvider>
+        <ThemeProviders>
+          <SessionProvider>
+            <TanstackProvider>
+              <div>{children}</div>
+            </TanstackProvider>
+          </SessionProvider>
+        </ThemeProviders>
       </body>
     </html>
   );

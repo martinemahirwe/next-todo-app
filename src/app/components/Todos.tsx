@@ -1,26 +1,33 @@
 'use client';
-import { todoType } from '@/types/todoType';
 import TodoItem from './TodoItem';
 import TodoForm from './TodoForm';
-import { useFetchTodos } from '@/hooks/useTodos';
-import { useSession } from 'next-auth/react';
 import Loading from '../todos/loading';
+import { List } from 'react-movable';
+import { useTodos } from '@/hooks/useDrag';
 
 const Todos = () => {
-  const { data: session } = useSession();
-  const { data, error, isLoading, isError } = useFetchTodos(
-    session?.user?.email
-  );
+  const { todos, isLoading, isError, error, handleReorder } = useTodos();
 
-  if (isError) return <div>Error: {error.message}</div>;
+  if (isError) return <div>Error: {error?.message}</div>;
   if (isLoading) return <Loading />;
 
   return (
     <main className="flex flex-col text-center">
       <TodoForm />
-      <div className="flex flex-col mt-8 gap-2">
-        {data?.map((todo: todoType) => <TodoItem key={todo.id} todo={todo} />)}
-      </div>
+      <List
+        values={todos}
+        onChange={handleReorder}
+        renderList={({ children, props }) => (
+          <ul {...props} className="flex flex-col mt-8 gap-2">
+            {children}
+          </ul>
+        )}
+        renderItem={({ value, props }) => (
+          <li {...props}>
+            <TodoItem key={value.id} todo={value} />
+          </li>
+        )}
+      />
     </main>
   );
 };

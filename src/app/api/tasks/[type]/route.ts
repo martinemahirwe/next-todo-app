@@ -1,8 +1,6 @@
-import { eq } from 'drizzle-orm';
 import { NextRequest, NextResponse } from 'next/server';
-import database from '@/db/drizzle';
-import { todolist } from '@/db/schema';
 import { ParamType } from '@/types/todoType';
+import { updateTodo } from '@/actions/todoActions';
 
 export async function PATCH(
   req: NextRequest,
@@ -19,36 +17,14 @@ export async function PATCH(
       );
     }
 
+    await updateTodo(taskId, type, { description, completed });
+
     if (type === 'description') {
-      if (!description) {
-        return NextResponse.json(
-          { error: 'description is required' },
-          { status: 400 }
-        );
-      }
-
-      await database
-        .update(todolist)
-        .set({ task: description })
-        .where(eq(todolist.id, taskId));
-
       return NextResponse.json({
         message: 'Task description updated successfully',
       });
     }
     if (type === 'status') {
-      if (completed === undefined) {
-        return NextResponse.json(
-          { error: 'completed status is required' },
-          { status: 400 }
-        );
-      }
-
-      await database
-        .update(todolist)
-        .set({ completed })
-        .where(eq(todolist.id, taskId));
-
       return NextResponse.json({ message: 'Task status updated successfully' });
     }
 

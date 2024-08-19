@@ -8,9 +8,9 @@ const apiClient = axios.create({
   },
 });
 
-export const fetchTodos = async (userEmail: string) => {
+export const fetchTodos = async () => {
   try {
-    const response = await apiClient.get('/', { params: { userEmail } });
+    const response = await apiClient.get('/');
     return response.data;
   } catch (error: any) {
     throw new Error('Error fetching todos', error);

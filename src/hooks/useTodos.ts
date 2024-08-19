@@ -4,20 +4,20 @@ import {
   createTodo,
   deleteTodo,
   updateTodo,
-} from '../lib/todoApis';
+} from '../lib/fetchApis';
 
-export const useFetchTodos = (userEmail: string | null | undefined) => {
+export const useFetchTodos = () => {
   return useQuery({
-    queryKey: ['todos', userEmail],
-    queryFn: () => fetchTodos(userEmail!),
+    queryKey: ['todos'],
+    queryFn: () => fetchTodos(),
   });
 };
 
 export const useCreateTodo = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ task, userEmail }: { task: string; userEmail: string }) =>
-      createTodo({ task, userEmail }),
+    mutationFn: ({ task, userId }: { task: string; userId: string }) =>
+      createTodo({ task, userId }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['todos'] });
     },

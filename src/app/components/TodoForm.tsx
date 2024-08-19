@@ -1,7 +1,5 @@
 'use client';
-import { Input } from './ui/input';
 import { AiOutlinePlus } from 'react-icons/ai';
-import { toast } from 'react-toastify';
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -9,46 +7,27 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogFooter,
-  AlertDialogAction,
+  AlertDialogDescription,
 } from './ui/alert-dialog';
-import { useSession } from 'next-auth/react';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { userSchema } from '@/lib/validations/formValidations';
-import { useCreateTodo } from '@/hooks/useTodos';
-
-interface IFormInput {
-  task: string;
-}
+import { Button } from './ui/button';
+import { Input } from './ui/input';
+import { useCreateTodolist } from '@/hooks/useCreateTodoList';
 
 const CreateTodolist = () => {
-  const { data: session } = useSession();
   const {
+    showPopup,
+    setShowPopup,
     register,
     handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm<IFormInput>({
-    resolver: yupResolver(userSchema),
-  });
-
-  const createTodoMutation = useCreateTodo();
-
-  const onSubmit: SubmitHandler<IFormInput> = (data) => {
-    if (data.task.trim() && !errors.task) {
-      createTodoMutation.mutate({
-        task: data.task,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-        userEmail: session?.user?.email!,
-      });
-      reset();
-      toast.success('task added');
-    }
-  };
+    errors,
+    onSubmit,
+    handleCancel,
+    createTodoMutation,
+  } = useCreateTodolist();
 
   return (
-    <div>
-      <AlertDialog>
+    <div className="z-10">
+      <AlertDialog open={showPopup} onOpenChange={setShowPopup}>
         <AlertDialogTrigger>
           <div
             className="flex items-center justify-center w-16 h-16 mt-9 bg-green-700 text-green-50 rounded-full shadow-lg cursor-pointer"
@@ -58,10 +37,15 @@ const CreateTodolist = () => {
           </div>
         </AlertDialogTrigger>
 
-        <AlertDialogContent>
+        <AlertDialogContent className="bg-white text-black">
           <AlertDialogHeader>
             <AlertDialogTitle className="">Add a New Todo</AlertDialogTitle>
           </AlertDialogHeader>
+          <AlertDialogDescription>
+            Please enter your new todo item below. Fill in the task and click
+            Add Todo to save it.
+          </AlertDialogDescription>
+
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="gap-3 flex flex-col items-start justify-center rounded p-4">
               <Input
@@ -75,15 +59,18 @@ const CreateTodolist = () => {
                 <span className="text-red-500">{errors.task.message}</span>
               )}
               <AlertDialogFooter>
-                <AlertDialogAction
+                <Button
                   type="submit"
                   className="bg-green-700 text-green-50 rounded px-4 py-2"
                 >
-                  Add Todo
-                </AlertDialogAction>
-                <AlertDialogAction className="bg-gray-500 text-white rounded px-4 py-2">
+                  {createTodoMutation.isPending ? 'Adding...' : 'Add Todo'}
+                </Button>
+                <Button
+                  className="bg-gray-500 text-white rounded px-4 py-2"
+                  onClick={handleCancel}
+                >
                   Cancel
-                </AlertDialogAction>
+                </Button>
               </AlertDialogFooter>
             </div>
           </form>

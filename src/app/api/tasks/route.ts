@@ -1,24 +1,11 @@
-import { eq } from 'drizzle-orm';
 import { NextRequest, NextResponse } from 'next/server';
-import database from '@/db/drizzle';
-import { todolist } from '@/db/schema';
+import { fetchTodos, createTodo, deleteTodo } from '@/actions/todoActions';
+import { auth } from '../../../../auth';
 
-export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-  const userEmail = searchParams.get('userEmail');
-
-  if (!userEmail) {
-    return NextResponse.json(
-      { error: 'userEmail is required' },
-      { status: 400 }
-    );
-  }
-
+export async function GET() {
+  const session = await auth();
   try {
-    const tasks = await database
-      .select()
-      .from(todolist)
-      .where(eq(todolist.userEmail, userEmail));
+    const tasks = await fetchTodos(session?.user.id as string);
     return NextResponse.json(tasks);
   } catch (error) {
     return NextResponse.json(
@@ -30,27 +17,23 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const { task, userEmail } = await req.json();
-
-    if (!task || !userEmail) {
-      return NextResponse.json(
-        { error: 'task, and userEmail are required' },
-        { status: 400 }
-      );
+    const session = await auth();
+    const { task } = await req.json();
+    const userId = session?.user.id as string;
+    if (!task) {
+      return NextResponse.json({ error: 'task is required' }, { status: 400 });
     }
-
-    const newTodo = {
-      task,
-      userEmail,
-    };
-
-    await database.insert(todolist).values(newTodo);
+    await createTodo(task, userId);
     return NextResponse.json(
       { message: 'Task created successfully' },
       { status: 201 }
     );
   } catch (error: unknown) {
     if (error instanceof Error) return NextResponse.json(error.message);
+    return NextResponse.json({
+      status: 500,
+      message: error,
+    });
   }
 }
 
@@ -65,7 +48,7 @@ export async function DELETE(req: NextRequest) {
       );
     }
 
-    await database.delete(todolist).where(eq(todolist.id, taskId));
+    await deleteTodo(taskId);
 
     return NextResponse.json({ message: 'Task deleted successfully' });
   } catch (error) {

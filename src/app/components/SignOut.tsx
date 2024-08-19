@@ -1,5 +1,6 @@
 import { auth, signIn, signOut } from '../../../auth';
 import { Button } from './ui/button';
+import { FiLogOut } from 'react-icons/fi';
 
 export async function SignOut() {
   const session = await auth();
@@ -15,7 +16,7 @@ export async function SignOut() {
       }}
     >
       <Button className="px-4 py-2 font-semibold text-white bg-red-400 rounded shadow hover:bg-red-600 transition duration-300">
-        Logout
+        <FiLogOut className="text-xl" />
       </Button>
     </form>
   );

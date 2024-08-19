@@ -12,7 +12,9 @@ import type { AdapterAccountType } from 'next-auth/adapters';
 export const todolist = pgTable('todolist', {
   id: uuid('id').primaryKey().defaultRandom(),
   task: text('task').notNull(),
-  userEmail: text('userEmail').notNull(),
+  userId: text('userId')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
   completed: boolean('completed').default(false).notNull(),
 });
 

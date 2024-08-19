@@ -3,8 +3,8 @@ import { ReactNode } from 'react';
 export type todoType = {
   id?: string;
   task: string;
+  userId: string;
   completed?: boolean;
-  userEmail: string;
 };
 
 export interface RootLayoutProps {
@@ -12,3 +12,15 @@ export interface RootLayoutProps {
   dehydratedState?: unknown;
 }
 export type ParamType = { type: string };
+
+export interface TodoListProps {
+  onReorder: (newTodos: todoType[]) => void;
+}
+
+export interface Props {
+  todo: todoType;
+}
+
+export interface IFormInput {
+  task: string;
+}
